@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance & EMI Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #e0f2fe 0%, #ddd6fe 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .card { background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); padding: 40px; margin-bottom: 24px; }
+        .header { font-size: 32px; color: #1f2937; margin-bottom: 32px; font-weight: bold; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 32px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .input-group { padding: 20px; border-radius: 12px; border: 2px solid; margin-bottom: 20px; }
+        .input-group.green { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-color: #86efac; }
+        .input-group.blue { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-color: #93c5fd; }
+        .input-group.purple { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-color: #d8b4fe; }
+        .input-group.orange { background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-color: #fdba74; }
+        .input-group.pink { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); border-color: #f9a8d4; }
+        .input-group.teal { background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%); border-color: #5eead4; }
+        .input-group.red { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-color: #fca5a5; }
+        .input-group.yellow { background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%); border-color: #fde047; }
+        .input-group.indigo { background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); border-color: #a5b4fc; }
+        .input-group.cyan { background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%); border-color: #67e8f9; }
+        label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #374151; }
+        input[type="number"], input[type="range"] { width: 100%; padding: 10px 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+        input[type="number"]:focus { outline: none; border-color: #6366f1; }
+        .section-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #1f2937; }
+        .info-box { padding: 12px; border-radius: 8px; font-size: 14px; margin: 16px 0; }
+        .breakdown { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
+        .breakdown.border { border-top: 2px solid #e5e7eb; padding-top: 12px; margin-top: 8px; }
+        .text-green { color: #16a34a; font-weight: 600; }
+        .text-red { color: #dc2626; font-weight: 600; }
+        .text-blue { color: #2563eb; font-weight: 600; }
+        .text-bold { font-weight: 700; }
+        .text-xl { font-size: 24px; }
+        .summary-card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 2px solid; text-align: center; }
+        .summary-card h4 { font-size: 12px; color: #6b7280; margin-bottom: 8px; font-weight: 600; }
+        .summary-card .value { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+        .alert { padding: 24px; border-radius: 12px; border: 2px solid; margin-bottom: 20px; }
+        .alert.red { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+        .alert.green { background: #f0fdf4; border-color: #86efac; color: #16a34a; }
+        .slider-group { display: flex; gap: 12px; align-items: center; }
+        .slider-group input[type="number"] { width: 80px; }
+        @media (max-width: 768px) {
+            .card { padding: 20px; }
+            .header { font-size: 24px; }
+            .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="container">
+            <div class="card">
+                <h1 class="header">Personal Finance & EMI Tracker</h1>
+                
+                <div class="grid-3">
+                    <div class="input-group green">
+                        <label>Monthly Salary (In Hand)</label>
+                        <input type="number" id="salary" value="130000">
+                    </div>
+                    <div class="input-group blue">
+                        <label>Dad's EMI Contribution</label>
+                        <input type="number" id="dadContribution" value="40000">
+                    </div>
+                    <div class="input-group purple">
+                        <label>My EMI Contribution</label>
+                        <input type="number" id="myEmiContribution" value="14000">
+                    </div>
+                </div>
+
+                <div class="input-group orange">
+                    <div class="section-title">Annual Fixed Costs</div>
+                    <div class="grid-3">
+                        <div>
+                            <label>Term Insurance (Annual)</label>
+                            <input type="number" id="termInsurance" value="50000">
+                        </div>
+                        <div>
+                            <label>Property Tax (Annual)</label>
+                            <input type="number" id="propertyTax" value="55000">
+                        </div>
+                        <div>
+                            <label>House Maintenance (Annual)</label>
+                            <input type="number" id="houseMaintenance" value="42000">
+                        </div>
+                    </div>
+                    <div class="info-box" style="background: #fed7aa;">
+                        <p>Total Annual: <span id="totalAnnual" class="text-bold">₹1,47,000</span></p>
+                        <p>Monthly Average: <span id="monthlyAvg" class="text-bold">₹12,250</span></p>
+                    </div>
+                </div>
+
+                <div class="input-group pink">
+                    <div class="section-title">Monthly Variable Expenses</div>
+                    <div class="grid-3">
+                        <div><label>Groceries</label><input type="number" class="expense" data-category="groceries" value="8000"></div>
+                        <div><label>Utilities</label><input type="number" class="expense" data-category="utilities" value="3000"></div>
+                        <div><label>Transport</label><input type="number" class="expense" data-category="transport" value="5000"></div>
+                        <div><label>Entertainment</label><input type="number" class="expense" data-category="entertainment" value="4000"></div>
+                        <div><label>Miscellaneous</label><input type="number" class="expense" data-category="miscellaneous" value="5000"></div>
+                    </div>
+                    <div class="info-box" style="background: #fbcfe8;">
+                        <p>Total Monthly Expenses: <span id="totalExpenses" class="text-bold">₹25,000</span></p>
+                    </div>
+                </div>
+
+                <div class="input-group teal">
+                    <div class="section-title">Monthly Investment Allocation</div>
+                    <div class="info-box" style="background: #99f6e4;">
+                        <p>💰 Invest a percentage of your salary for long-term wealth building</p>
+                    </div>
+                    <div class="grid-3">
+                        <div>
+                            <label>Investment Percentage</label>
+                            <div class="slider-group">
+                                <input type="range" id="investmentSlider" min="0" max="30" value="10">
+                                <input type="number" id="investmentPercent" min="0" max="30" value="10">
+                                <span class="text-bold">%</span>
+                            </div>
+                        </div>
+                        <div class="info-box" style="background: #99f6e4;">
+                            <p style="margin-bottom: 4px;">Monthly Investment:</p>
+                            <p class="text-xl text-bold" id="monthlyInvestment">₹13,000</p>
+                            <p style="margin-top: 8px; font-size: 13px;">Annual: <span id="annualInvestment">₹1,56,000</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="input-group indigo">
+                        <div class="section-title">Monthly Breakdown</div>
+                        <div class="breakdown"><span>Salary:</span><span class="text-green" id="salaryDisplay">₹1,30,000</span></div>
+                        <div class="breakdown"><span>EMI:</span><span class="text-red" id="emiDisplay">-₹14,000</span></div>
+                        <div class="breakdown"><span>Fixed Costs:</span><span class="text-red" id="fixedDisplay">-₹12,250</span></div>
+                        <div class="breakdown"><span>Expenses:</span><span class="text-red" id="expensesDisplay">-₹25,000</span></div>
+                        <div class="breakdown"><span>Investment:</span><span class="text-blue" id="investDisplay">-₹13,000</span></div>
+                        <div class="breakdown border"><span class="text-bold">Savings:</span><span class="text-green text-xl text-bold" id="savingsDisplay">₹65,750</span></div>
+                    </div>
+
+                    <div class="input-group cyan">
+                        <div class="section-title">Annual Projection</div>
+                        <div class="breakdown"><span>Annual Savings:</span><span class="text-green" id="annualSavings">₹7,89,000</span></div>
+                        <div class="breakdown"><span>Annual Investment:</span><span class="text-blue" id="annualInvestDisplay">₹1,56,000</span></div>
+                        <div class="breakdown"><span>Annual Income:</span><span id="annualIncome">₹15,60,000</span></div>
+                        <div class="breakdown border"><span class="text-bold">Savings Rate:</span><span class="text-xl text-bold" style="color: #0891b2;" id="savingsRate">50.6%</span></div>
+                    </div>
+                </div>
+
+                <div class="input-group red">
+                    <div class="section-title">Emergency EMI Buffer</div>
+                    <div class="info-box" style="background: #fecaca;">
+                        <p>💡 Safety net for job loss or emergencies</p>
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label>Amount Saved for Buffer</label>
+                        <input type="number" id="bufferSaved" value="0" placeholder="Enter saved amount">
+                    </div>
+                    <div class="breakdown"><span>Required (6 months):</span><span id="bufferRequired">₹3,24,000</span></div>
+                    <div class="breakdown"><span>Currently Saved:</span><span id="bufferCurrent">₹0</span></div>
+                    <div class="breakdown border"><span class="text-bold">Still Need:</span><span class="text-red text-xl text-bold" id="bufferGap">₹3,24,000</span></div>
+                    <div class="info-box" id="bufferTip" style="background: #fef08a; margin-top: 16px;">
+                        <p><strong>Tip:</strong> Save <span id="bufferMonthly">₹27,000</span>/month to build in 12 months</p>
+                    </div>
+                </div>
+
+                <div class="input-group yellow">
+                    <div class="section-title">Annual Part Payment Goal</div>
+                    <div style="margin-bottom: 16px;">
+                        <label>Target Amount</label>
+                        <input type="number" id="targetPayment" value="900000">
+                    </div>
+                    <div class="breakdown"><span>Target:</span><span id="targetDisplay">₹9,00,000</span></div>
+                    <div class="breakdown"><span>Your Savings:</span><span id="savingsForPayment">₹7,89,000</span></div>
+                    <div class="breakdown border"><span class="text-bold">Gap/Surplus:</span><span class="text-red text-xl text-bold" id="paymentGap">-₹1,11,000</span></div>
+                </div>
+
+                <div class="alert red" id="alertBox">
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 12px;">Financial Alerts</h3>
+                    <div id="alertContent"></div>
+                </div>
+            </div>
+
+            <div class="grid-4">
+                <div class="summary-card" style="border-color: #93c5fd;">
+                    <h4>Total EMI</h4>
+                    <div class="value" style="color: #2563eb;" id="totalEmi">₹54,000</div>
+                    <div style="font-size: 11px; color: #9ca3af;">Combined</div>
+                </div>
+                <div class="summary-card" style="border-color: #d8b4fe;">
+                    <h4>Buffer Status</h4>
+                    <div class="value" style="color: #9333ea;" id="bufferStatus">0%</div>
+                    <div style="font-size: 11px; color: #9ca3af;" id="bufferSubtext">In Progress</div>
+                </div>
+                <div class="summary-card" style="border-color: #5eead4;">
+                    <h4>Monthly Investment</h4>
+                    <div class="value" style="color: #0d9488;" id="investmentCard">₹13,000</div>
+                    <div style="font-size: 11px; color: #9ca3af;" id="investmentSub">10% of salary</div>
+                </div>
+                <div class="summary-card" style="border-color: #86efac;">
+                    <h4>Savings Rate</h4>
+                    <div class="value" style="color: #16a34a;" id="rateCard">50.6%</div>
+                    <div style="font-size: 11px; color: #9ca3af;">Annual</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatINR(num) {
+            return '₹' + Math.round(num).toLocaleString('en-IN');
+        }
+
+        function calculate() {
+            const salary = parseFloat(document.getElementById('salary').value) || 0;
+            const dadContribution = parseFloat(document.getElementById('dadContribution').value) || 0;
+            const myEmiContribution = parseFloat(document.getElementById('myEmiContribution').value) || 0;
+            const termInsurance = parseFloat(document.getElementById('termInsurance').value) || 0;
+            const propertyTax = parseFloat(document.getElementById('propertyTax').value) || 0;
+            const houseMaintenance = parseFloat(document.getElementById('houseMaintenance').value) || 0;
+            const investmentPercent = parseFloat(document.getElementById('investmentPercent').value) || 0;
+            const bufferSaved = parseFloat(document.getElementById('bufferSaved').value) || 0;
+            const targetPayment = parseFloat(document.getElementById('targetPayment').value) || 0;
+
+            const expenses = Array.from(document.querySelectorAll('.expense')).reduce((sum, el) => sum + (parseFloat(el.value) || 0), 0);
+
+            const totalEmi = dadContribution + myEmiContribution;
+            const annualFixed = termInsurance + propertyTax + houseMaintenance;
+            const monthlyFixed = annualFixed / 12;
+            const monthlyInvestment = (salary * investmentPercent) / 100;
+            const monthlySavings = salary - myEmiContribution - monthlyFixed - expenses - monthlyInvestment;
+            const annualSavings = monthlySavings * 12;
+            const annualInvestment = monthlyInvestment * 12;
+            const requiredBuffer = totalEmi * 6;
+            const bufferGap = requiredBuffer - bufferSaved;
+            const paymentDeficit = targetPayment - annualSavings;
+
+            document.getElementById('totalAnnual').textContent = formatINR(annualFixed);
+            document.getElementById('monthlyAvg').textContent = formatINR(monthlyFixed);
+            document.getElementById('totalExpenses').textContent = formatINR(expenses);
+            document.getElementById('monthlyInvestment').textContent = formatINR(monthlyInvestment);
+            document.getElementById('annualInvestment').textContent = formatINR(annualInvestment);
+            document.getElementById('salaryDisplay').textContent = formatINR(salary);
+            document.getElementById('emiDisplay').textContent = '-' + formatINR(myEmiContribution);
+            document.getElementById('fixedDisplay').textContent = '-' + formatINR(monthlyFixed);
+            document.getElementById('expensesDisplay').textContent = '-' + formatINR(expenses);
+            document.getElementById('investDisplay').textContent = '-' + formatINR(monthlyInvestment);
+            
+            const savingsEl = document.getElementById('savingsDisplay');
+            savingsEl.textContent = formatINR(monthlySavings);
+            savingsEl.className = monthlySavings >= 0 ? 'text-green text-xl text-bold' : 'text-red text-xl text-bold';
+
+            document.getElementById('annualSavings').textContent = formatINR(annualSavings);
+            document.getElementById('annualInvestDisplay').textContent = formatINR(annualInvestment);
+            document.getElementById('annualIncome').textContent = formatINR(salary * 12);
+            document.getElementById('savingsRate').textContent = ((annualSavings / (salary * 12)) * 100).toFixed(1) + '%';
+
+            document.getElementById('bufferRequired').textContent = formatINR(requiredBuffer);
+            document.getElementById('bufferCurrent').textContent = formatINR(bufferSaved);
+            
+            const gapEl = document.getElementById('bufferGap');
+            if (bufferGap <= 0) {
+                gapEl.textContent = '✓ Done!';
+                gapEl.className = 'text-green text-xl text-bold';
+                document.getElementById('bufferTip').style.display = 'none';
+            } else {
+                gapEl.textContent = formatINR(bufferGap);
+                gapEl.className = 'text-red text-xl text-bold';
+                document.getElementById('bufferTip').style.display = 'block';
+                document.getElementById('bufferMonthly').textContent = formatINR(bufferGap / 12);
+            }
+
+            document.getElementById('targetDisplay').textContent = formatINR(targetPayment);
+            document.getElementById('savingsForPayment').textContent = formatINR(annualSavings);
+            
+            const deficitEl = document.getElementById('paymentGap');
+            deficitEl.textContent = (paymentDeficit > 0 ? '-' : '+') + formatINR(Math.abs(paymentDeficit));
+            deficitEl.className = paymentDeficit <= 0 ? 'text-green text-xl text-bold' : 'text-red text-xl text-bold';
+
+            document.getElementById('totalEmi').textContent = formatINR(totalEmi);
+            
+            const bufferStatusEl = document.getElementById('bufferStatus');
+            const bufferSubEl = document.getElementById('bufferSubtext');
+            if (bufferGap <= 0) {
+                bufferStatusEl.textContent = '✓';
+                bufferSubEl.textContent = 'Complete';
+            } else {
+                bufferStatusEl.textContent = Math.round((bufferSaved / requiredBuffer) * 100) + '%';
+                bufferSubEl.textContent = 'In Progress';
+            }
+
+            document.getElementById('investmentCard').textContent = formatINR(monthlyInvestment);
+            document.getElementById('investmentSub').textContent = investmentPercent + '% of salary';
+            document.getElementById('rateCard').textContent = ((annualSavings / (salary * 12)) * 100).toFixed(1) + '%';
+
+            // Alerts
+            const alertBox = document.getElementById('alertBox');
+            const alertContent = document.getElementById('alertContent');
+            let alerts = [];
+
+            if (monthlySavings < 0) alerts.push('⚠️ Expenses exceed income');
+            if (bufferGap > 0 && monthlySavings >= 0) alerts.push('💡 Build emergency buffer: ' + formatINR(bufferGap) + ' remaining');
+            if (paymentDeficit > 0 && monthlySavings >= 0) alerts.push('⚠️ Short by ' + formatINR(paymentDeficit) + ' for part payment goal');
+
+            if (alerts.length > 0) {
+                alertBox.className = 'alert red';
+                alertBox.style.display = 'block';
+                alertContent.innerHTML = alerts.map(a => '<p style="margin-bottom: 8px;">' + a + '</p>').join('');
+            } else {
+                alertBox.className = 'alert green';
+                alertBox.style.display = 'block';
+                alertContent.innerHTML = '<h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Excellent! 🎉</h3><p>You\'re on track with your financial goals!</p>';
+            }
+        }
+
+        // Event listeners
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+
+        document.getElementById('investmentSlider').addEventListener('input', function() {
+            document.getElementById('investmentPercent').value = this.value;
+            calculate();
+        });
+
+        document.getElementById('investmentPercent').addEventListener('input', function() {
+            document.getElementById('investmentSlider').value = Math.min(30, Math.max(0, this.value));
+            calculate();
+        });
+
+        // Initial calculation
+        calculate();
+    </script>
+</body>
+</html>
